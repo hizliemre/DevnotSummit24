@@ -14,11 +14,11 @@ internal static class GetTodoList
 {
     public const string ROUTE_NAME = "GetTodoList";
 
-    public static void MapRoute(IEndpointRouteBuilder app)
+    public static RouteHandlerBuilder MapRoute(IEndpointRouteBuilder app)
     {
         RouteGroupBuilder group = app.MapGroup("/todo/lists");
 
-        group.MapGet("{id}", async (string id, ISender sender, CancellationToken cancellationToken) =>
+        return group.MapGet("{id}", async (string id, ISender sender, CancellationToken cancellationToken) =>
             {
                 GetTodoListQuery query = new()
                 {

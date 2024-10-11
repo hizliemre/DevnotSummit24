@@ -15,14 +15,14 @@ internal static class CreateTodoItem
 {
     public const string ROUTE_NAME = "CreateTodoItem";
 
-    public static void MapRoute(IEndpointRouteBuilder app)
+    public static RouteHandlerBuilder MapRoute(IEndpointRouteBuilder app)
     {
         RouteGroupBuilder group = app.MapGroup("/todo/lists/{listId}/items");
 
-        group.MapPost(string.Empty,
+        return group.MapPost(string.Empty,
                 async (string listId, CreateTodoItemRequest request, ISender sender, CancellationToken cancellationToken) =>
                 {
-                    var command = new CreateTodoItemCommand
+                    CreateTodoItemCommand command = new CreateTodoItemCommand
                     {
                         ListId = listId,
                         Title = request.Title,
@@ -31,14 +31,10 @@ internal static class CreateTodoItem
                         EndDate = request.EndDate
                     };
 
-                    var id = await sender.Send(command, cancellationToken);
+                    string id = await sender.Send(command, cancellationToken);
 
                     return TypedResults.CreatedAtRoute(GetTodoItem.ROUTE_NAME, new { id });
                 })
             .WithName(ROUTE_NAME);
-
-
     }
-
 }
-
