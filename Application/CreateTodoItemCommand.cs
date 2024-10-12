@@ -20,7 +20,8 @@ internal class CreateTodoItemCommandHandler(IServiceProvider provider, ITodoList
 {
     public async Task<string> Handle(CreateTodoItemCommand request, CancellationToken cancellationToken)
     {
-        ITodoItemPort todoItemPort = provider.GetRequiredKeyedService<ITodoItemPort>(request.ServiceKey);
+        ITodoItemPort todoItemPort =
+            provider.GetKeyedService<ITodoItemPort>(request.ServiceKey) ?? provider.GetRequiredService<ITodoItemPort>();
 
         bool hasList = await todoListPort.HasList(request.ListId);
 
