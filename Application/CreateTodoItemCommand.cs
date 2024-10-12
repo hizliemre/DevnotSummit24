@@ -1,11 +1,13 @@
 using Domain.Port;
 using Domain.UseCase;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Application;
 
 public class CreateTodoItemCommand: IRequest<string>
 {
+    public string ServiceKey { get; set; } = "default";
     public string ListId { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
@@ -14,10 +16,12 @@ public class CreateTodoItemCommand: IRequest<string>
     public DateTime? EndDate { get; set; }
 }
 
-internal class CreateTodoItemCommandHandler(ITodoListPort todoListPort, ITodoItemPort todoItemPort) : IRequestHandler<CreateTodoItemCommand, string>
+internal class CreateTodoItemCommandHandler(IServiceProvider provider, ITodoListPort todoListPort) : IRequestHandler<CreateTodoItemCommand, string>
 {
     public async Task<string> Handle(CreateTodoItemCommand request, CancellationToken cancellationToken)
     {
+        ITodoItemPort todoItemPort = provider.GetRequiredKeyedService<ITodoItemPort>(request.ServiceKey);
+
         bool hasList = await todoListPort.HasList(request.ListId);
 
         if (!hasList)

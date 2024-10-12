@@ -1,5 +1,6 @@
 using Application;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.TodoItem;
 
@@ -20,10 +21,11 @@ internal static class CreateTodoItem
         RouteGroupBuilder group = app.MapGroup("/todo/lists/{listId}/items");
 
         return group.MapPost(string.Empty,
-                async (string listId, CreateTodoItemRequest request, ISender sender, CancellationToken cancellationToken) =>
+                async ([FromHeader] string? company, string listId, CreateTodoItemRequest request, ISender sender, CancellationToken cancellationToken) =>
                 {
-                    CreateTodoItemCommand command = new CreateTodoItemCommand
+                    CreateTodoItemCommand command = new()
                     {
+                        ServiceKey = company,
                         ListId = listId,
                         Title = request.Title,
                         Description = request.Description,

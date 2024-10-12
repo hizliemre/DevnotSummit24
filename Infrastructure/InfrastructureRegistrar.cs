@@ -11,6 +11,9 @@ public static class InfrastructureRegistrar
         services.AddSingleton<Store>();
         services.AddTransient<ITodoListPort, TodoListStoreAdapter>();
         services.AddTransient<ITodoItemPort, TodoItemStoreAdapter>();
+        services.AddKeyedTransient<ITodoItemPort, TodoItemStoreAdapter>("default");
+        services.AddKeyedTransient<ITodoItemPort, XCompanyTodoItemStoreAdapter>("x");
+
         return services;
     }
 }
